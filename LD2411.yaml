@@ -1,0 +1,74 @@
+esphome:
+  name: ld2411
+  friendly_name: LD2411
+
+substitutions:
+  out_pin: GPIO25 # The ESP pin where the OUT from LD2411 is connected
+  tx_pin: GPIO26 # The ESP pin where the TX from LD2411 is connected
+  rx_pin: GPIO27 # The ESP pin where the RX from LD2411 is connected
+
+esp32:
+  board: firebeetle32
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: !secret encryption_key
+
+binary_sensor:
+  - platform: gpio
+    pin: 
+      number: $out_pin
+      mode:
+        input: true
+        pulldown: true
+    id: gesture
+    name: Gesture
+  - platform: gpio
+    internal: True
+    pin: 
+      number: $rx_pin
+      mode:
+        input: true
+        pulldown: true
+    id: approaching_int
+  - platform: gpio
+    internal: True
+    pin: 
+      number: $tx_pin
+      mode:
+        input: true
+        pulldown: true
+    id: leaving_int
+  - platform: template
+    name: Approaching
+    lambda: |-
+      if( id(approaching_int).state == true && id(leaving_int).state == false ) { 
+        return true;
+      } else { return false; }
+  - platform: template
+    name: Leaving
+    lambda: |-
+      if( id(approaching_int).state == false && id(leaving_int).state == true ) { 
+        return true;
+      } else { return false; }
+
+ota:
+  password: !secret ota_update
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Ld2411 Fallback Hotspot"
+    password: !secret fallback_pass
+
+captive_portal:
+    
