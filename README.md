@@ -7,8 +7,6 @@
 
 # LD2411-ESPHome
 
-💙 **Enjoying this hobby project? [Send a voluntary thank-you via Ko-fi](https://ko-fi.com/chreece).**
-
 LD2411 Gesture Recognition / ESPHome Integration
 
 ## ❤️ Voluntary support
